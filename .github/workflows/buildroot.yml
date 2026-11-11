@@ -1,0 +1,47 @@
+name: buildroot-assignment4
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    container: cuaesd/aesd-autotest:24-assignment4-buildroot
+    env:
+      FORCE_UNSAFE_CONFIGURE: '1'
+      BR2_DL_DIR: /tmp/aeld-buildroot-downloads
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure public source transport
+        run: git config --global url.https://github.com/.insteadOf git@github.com:
+      - name: Checkout pinned submodules
+        run: git submodule update --init --recursive
+      - uses: actions/cache/restore@v4
+        id: download-cache
+        with:
+          path: /tmp/aeld-buildroot-downloads
+          key: buildroot-2024.02.13-downloads-v1
+      - name: Configure image
+        run: ./build.sh
+      - name: Build image
+        run: ./build.sh
+      - name: Boot, test PATH and syslog, transfer result with SCP
+        run: ./scripts/validate-image.sh
+      - name: Run official assignment validation
+        run: SKIP_BUILD=1 DO_VALIDATE=1 ./full-test.sh
+      - uses: actions/cache/save@v4
+        if: always() && steps.download-cache.outputs.cache-hit != 'true'
+        with:
+          path: /tmp/aeld-buildroot-downloads
+          key: buildroot-2024.02.13-downloads-v1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assignment4-buildroot-evidence
+          path: |
+            evidence/
+            test.sh.log
+            buildroot/.config
