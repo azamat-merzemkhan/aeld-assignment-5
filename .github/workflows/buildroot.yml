@@ -16,7 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Configure public source transport
-        run: git config --global url.https://github.com/.insteadOf git@github.com:
+        run: |
+          git config --global url.https://github.com/.insteadOf git@github.com:
       - name: Checkout pinned submodules
         run: git submodule update --init --recursive
       - uses: actions/cache/restore@v4
