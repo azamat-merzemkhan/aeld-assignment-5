@@ -56,3 +56,7 @@ Installed paths:
 The implementation and validation workflow were prepared with OpenAI Codex
 AI assistance using official course starter code, Buildroot configuration,
 and assignment-autotest. No other student's solution was used.
+
+## Assignment 5
+
+Includes the port 9000 TCP daemon and /etc/init.d/S99aesdsocket startup/shutdown integration. runqemu.sh forwards localhost:9000 and localhost:10022. CI builds the image, validates boot/startup, official socket tests, daemon restart, graceful halt cleanup, then runs the official assignment 5 Buildroot validation. Implementation prepared with OpenAI Codex AI assistance using official course sources.

@@ -1,4 +1,4 @@
-name: buildroot-assignment4
+name: buildroot-assignment5
 on:
   push:
     branches: ['**']
@@ -9,7 +9,7 @@ jobs:
   build-and-validate:
     runs-on: ubuntu-24.04
     timeout-minutes: 120
-    container: cuaesd/aesd-autotest:24-assignment4-buildroot
+    container: cuaesd/aesd-autotest:24-assignment5-buildroot
     env:
       FORCE_UNSAFE_CONFIGURE: '1'
       BR2_DL_DIR: /tmp/aeld-buildroot-downloads
@@ -29,7 +29,7 @@ jobs:
         run: ./build.sh
       - name: Build image
         run: ./build.sh
-      - name: Boot, test PATH and syslog, transfer result with SCP
+      - name: Boot and validate socket startup, restart and shutdown
         run: ./scripts/validate-image.sh
       - name: Run official assignment validation
         run: SKIP_BUILD=1 DO_VALIDATE=1 ./full-test.sh
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: assignment4-buildroot-evidence
+          name: assignment5-buildroot-evidence
           path: |
             evidence/
             test.sh.log
